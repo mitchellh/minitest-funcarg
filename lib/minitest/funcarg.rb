@@ -36,12 +36,14 @@ module MiniTest
           # Do nothing, we're going to create it.
         end
 
+        # Get a list of the parameter names
         params = instance_method(name).parameters.map do |type, name|
           raise "Funcargs only support required parameters." if type != :req
           name
         end
 
-        # Define the new test method that loads the funcargs
+        # Define the new test method that loads the funcargs and calls
+        # a redefined test method that takes no parameters.
         define_method(funcarg_method) do
           args = params.map { |p| self.send("minitest_funcarg__#{p}") }
           self.send(no_funcarg_method, *args)
